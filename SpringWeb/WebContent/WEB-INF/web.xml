@@ -19,13 +19,13 @@
 		Con este nombre el FC intenta buscar un archivo: /WEB-INF/dispatcher-servlet.xml
 	-->
 	<servlet>
-		<servlet-name>dispatcher</servlet-name>
+		<servlet-name>spring</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<load-on-startup>2</load-on-startup>
 	</servlet>
 	<!-- Define por sufijo la mascara que activa el framework -->
 	<servlet-mapping>
-		<servlet-name>dispatcher</servlet-name>
+		<servlet-name>spring</servlet-name>
 		<url-pattern>*.htm</url-pattern>
 	</servlet-mapping>
 
