@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/aop 
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       ">
+
+
+	<!-- Los interceptores -->
+	<bean id="antes" class="com.pruebas.aop.BeforeAOP"/>
+	<bean id="despues" class="com.pruebas.aop.AfterAOP"/>
+	
+	<!-- Clase real con la implementacion -->
+	<bean id="impl" class="com.pruebas.aop.CalcularImpl"/>
+	
+	<!-- Declaracion para construir el proxy -->
+	<bean id = "proxy"
+		class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>com.pruebas.aop.ICalcular</value>
+		</property>
+		
+		<property name="interceptorNames">
+			<list>
+				<value>antes</value>
+				<value>despues</value>
+			</list>
+		</property>
+		
+		<property name="target">
+			<ref bean="impl"/>
+		</property>
+	</bean>
+
+
+</beans>
