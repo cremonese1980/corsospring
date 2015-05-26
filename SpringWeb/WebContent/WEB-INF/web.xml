@@ -26,7 +26,7 @@
 	<!-- Define por sufijo la mascara que activa el framework -->
 	<servlet-mapping>
 		<servlet-name>spring</servlet-name>
-		<url-pattern>*.htm</url-pattern>
+		<url-pattern>/spring/*</url-pattern>
 	</servlet-mapping>
 
 	

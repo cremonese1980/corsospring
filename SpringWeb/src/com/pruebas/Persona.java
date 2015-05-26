@@ -2,14 +2,16 @@ package com.pruebas;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import org.hibernate.annotations.Entity;
+import org.springframework.stereotype.Component;
 
 
 
 @Entity
+@Component
 public class Persona implements Serializable {
 
 	/**
