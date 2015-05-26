@@ -19,7 +19,7 @@ public class ControladorPrincipal {
 	private PersonaService personaService;
 	
 	public ControladorPrincipal() {
-		Log.debug("Construyendo controlador");
+		Log.debug("Construyendo controlador principal");
 	}
 
 	@RequestMapping(value="/persons", method=RequestMethod.GET )
