@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:webflow-config="http://www.springframework.org/schema/webflow-config"
+	
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow-config
+                       http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.3.xsd"		
+		>
+
+	<!-- 
+		Definimos la mácara que se usará para indicarle a Spring que se va a iniciar un flujo
+		con el parametro "_flowId" la query string  indicaremos que flujo sera iniciado
+		por ejemplo /inicioswf.htm?_flowId=adivinanza
+	-->
+	<bean name="/inicioswf.htm" class="org.springframework.webflow.executor.mvc.FlowController">
+		<property name="flowExecutor" ref="flowExecutor" />
+	</bean>
+
+	<!-- Lanza el ejecuatdor de flujos -->
+	<webflow-config:flow-executor id="flowExecutor" registry-ref="flowRegistry" repository-type="singlekey"/>
+
+	<!-- Declaramos el repositorio o registro de flujos disponibles de la aplicación  -->
+	<webflow-config:flow-registry id="flowRegistry">
+		<webflow-config:flow-location  path="/WEB-INF/flujo.xml" />
+	</webflow-config:flow-registry>
+
+	<!-- Declaramos el View Resolver -->
+	<bean id="viewResolver" 
+	      class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+</beans>
+
