@@ -2,6 +2,11 @@ package com.pruebas.entitades;
 
 import java.io.Serializable;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.stereotype.Component;
+
+@Component("User")
 public class Usuario implements Serializable {
 	private static final long serialVersionUID = 8074982203043905372L;
 	
@@ -13,6 +18,11 @@ public class Usuario implements Serializable {
 	private String ciudad;
 
 	public Usuario() {
+	}
+	
+	@PostConstruct
+	public void inicio(){
+		System.out.println("Usuario iniciado");
 	}
 
 	public Usuario(long idusuario, String nombre, String appellido,

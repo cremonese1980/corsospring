@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.pruebas.entitades.Usuario;
@@ -56,5 +57,38 @@ public class UsuarioController {
 		return "redirect:articulos";
 		
 	}
+	
+	@RequestMapping(value="/edit", method=RequestMethod.GET )
+	public String verUsuario(@RequestParam(value="id", required=true) Long id, Model model){
+		
+		
+		model.addAttribute("usuarioAttr", usuarioService.buscarUsuario(id));
+		
+		return "editarusuario";
+		
+	}
+	
+	@RequestMapping(value="/edit", method=RequestMethod.POST )
+	public String modificarUsuario(@ModelAttribute("usuarioAttr") Usuario usuario,
+			@RequestParam(value="id", required=true) Long id, Model model){
+		
+		usuario.setIdusuario(id);
+		
+		usuarioService.modificarUsuario(usuario);
+		
+		return "redirect:articulos";
+		
+	}
+	
+	@RequestMapping(value="/delete", method=RequestMethod.GET )
+	public String borrarUsuario(@RequestParam(value="id", required=true) Long id, Model model){
+		
+		usuarioService.eliminarUsuario(id);
+		return "redirect:articulos";
+		
+	}
+	
+	
+	
 	
 }

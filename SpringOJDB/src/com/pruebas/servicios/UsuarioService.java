@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
@@ -19,9 +20,16 @@ public class UsuarioService implements UsuariosDao {
 	
 	@Resource(name="dataSource")
 	private DataSource dataSource;
+	
+	private JdbcTemplate jdbcTemplate;
 
 	public UsuarioService() {
 		System.out.println("UsuarioService construido");
+	}
+	
+	@PostConstruct
+	public void init(){
+		jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
 	@Override
@@ -49,15 +57,15 @@ public class UsuarioService implements UsuariosDao {
 	}
 
 	@Override
-	public Usuario buscarUsuario(Usuario usuario) {
+	public Usuario buscarUsuario(Long id) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		
 		List<Usuario> usuarioList = jdbcTemplate.query("Select * from Usuarios "
-				+ "where idusuario = " + usuario.getIdusuario(),
+				+ "where idusuario = " + id,
 				new UsuariosRowMapper());
 		
 		if(usuarioList.isEmpty()){
-			throw new ObjectRetrievalFailureException(Usuario.class, usuario.getIdusuario());
+			throw new ObjectRetrievalFailureException(Usuario.class, id);
 		}
 		
 		return usuarioList.get(0);
@@ -75,13 +83,25 @@ public class UsuarioService implements UsuariosDao {
 
 	@Override
 	public void eliminarUsuario(Long idusuario) {
-		// TODO Auto-generated method stub
+		jdbcTemplate.update("delete from  Usuarios "
+				+ "where idusuario = " + idusuario);
 
 	}
 
 	@Override
 	public void modificarUsuario(Usuario usuario) {
-		// TODO Auto-generated method stub
+		jdbcTemplate.update("update Usuarios set nombre = ?, "
+				+ " appellido = ?, "
+				+ "telefono = ?, "
+				+ "ciudad = ? "
+				+ "where idusuario = ?",
+				new Object[]{
+					usuario.getNombre(),
+					usuario.getAppellido(),
+					usuario.getTelefono(),
+					usuario.getCiudad(),
+					usuario.getIdusuario()
+				});
 
 	}
 
