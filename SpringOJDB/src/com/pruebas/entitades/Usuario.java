@@ -1,4 +1,4 @@
-package com.pruebas;
+package com.pruebas.entitades;
 
 import java.io.Serializable;
 
@@ -72,6 +72,13 @@ public class Usuario implements Serializable {
 
 	public void setCiudad(String ciudad) {
 		this.ciudad = ciudad;
+	}
+
+	@Override
+	public String toString() {
+		return "Usuario [idusuario=" + idusuario + ", nombre=" + nombre
+				+ ", appellido=" + appellido + ", telefono=" + telefono
+				+ ", ciudad=" + ciudad + "]";
 	}
 	
 	
