@@ -12,7 +12,7 @@
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
           p:location="/WEB-INF/jdbc.properties" /-->
     
-    <bean id="conexion"
+    <bean id="dataSource"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource"
           p:driverClassName="com.mysql.jdbc.Driver"
           p:url="jdbc:mysql://localhost:3306/spring3"
