@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/SpringOJDB">              
+     <Manager
+          className="org.apache.catalina.session.PersistentManager"
+          saveOnRestart="true"
+          maxActiveSessions="-1"
+          minIdleSwap="-1"
+          maxIdleBackup="-1">
+          <Store className="org.apache.catalina.session.JDBCStore"
+                driverName="com.mysql.jdbc.Driver"
+                connectionURL="jdbc:mysql://localhost:3306/spring3?user=root&amp;password=password"
+                sessionTable="tomcat_sessions"
+                sessionIdCol="session_id"
+                sessionAppCol="app_name"
+                sessionDataCol="session_data"
+                sessionValidCol="valid_session"
+                sessionMaxInactiveCol="max_inactive"
+                sessionLastAccessedCol="last_access"
+                checkInterval="30"/>
+      </Manager>
+      
+      <!-- 
+	    create table tomcat_sessions (
+		  session_id     varchar(100) not null primary key,
+		  valid_session  char(1) not null,
+		  max_inactive   int not null,
+		  last_access    bigint not null,
+		  app_name       varchar(255),
+		  session_data   mediumblob,
+		  KEY kapp_name(app_name)
+		);
+      
+      -->
+              
+</Context>
+
+
+
+
+
