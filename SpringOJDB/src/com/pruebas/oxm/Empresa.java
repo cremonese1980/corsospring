@@ -15,7 +15,7 @@ public class Empresa implements Serializable {
 	
 	private int idempresa;
 	private String nombre;
-	private Collection<Empresa> empleados;
+	private Collection<Empleado> empleados;
 	
 	
 	
@@ -32,7 +32,7 @@ public class Empresa implements Serializable {
 
 
 
-	public Empresa(String nombre, Collection<Empresa> empleados) {
+	public Empresa(String nombre, Collection<Empleado> empleados) {
 		super();
 		this.nombre = nombre;
 		this.empleados = empleados;
@@ -64,13 +64,13 @@ public class Empresa implements Serializable {
 
 
 
-	public Collection<Empresa> getEmpleados() {
+	public Collection<Empleado> getEmpleados() {
 		return empleados;
 	}
 
 
 
-	public void setEmpleados(Collection<Empresa> empleados) {
+	public void setEmpleados(Collection<Empleado> empleados) {
 		this.empleados = empleados;
 	}
 

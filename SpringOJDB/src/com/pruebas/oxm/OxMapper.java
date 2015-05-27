@@ -2,6 +2,9 @@ package com.pruebas.oxm;
 
 import java.io.IOException;
 
+import org.springframework.stereotype.Component;
+
+
 public interface OxMapper {
 
     /**

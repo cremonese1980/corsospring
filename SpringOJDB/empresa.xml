@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<empresa idempresa="0">
+	<empleados>
+		<nombre>Ana</nombre>
+		<edad>22</edad>
+	</empleados>
+	<empleados>
+		<nombre>Ana</nombre>
+		<edad>23</edad>
+	</empleados>
+	<empleados>
+		<nombre>Luis</nombre>
+		<edad>33</edad>
+	</empleados>
+	<nombre>Ventura24</nombre>
+</empresa>

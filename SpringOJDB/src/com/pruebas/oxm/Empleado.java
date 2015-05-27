@@ -5,18 +5,23 @@ import java.io.Serializable;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType
+@XmlType(propOrder={"nombre", "edad"})
 public class Empleado implements Serializable {
 	private static final long serialVersionUID = -8362145031142335092L;
 	
 	
 	private String nombre;
 	private int edad;
-	@XmlTransient
 	private long sueldo;
 	
-	
-	
+	@Override
+	public String toString() {
+		return "Empleado [nombre=" + nombre + ", edad=" + edad + ", sueldo="
+				+ sueldo + "]";
+	}
+
+
+
 	public Empleado() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -56,7 +61,7 @@ public class Empleado implements Serializable {
 	}
 
 
-
+	@XmlTransient
 	public long getSueldo() {
 		return sueldo;
 	}
