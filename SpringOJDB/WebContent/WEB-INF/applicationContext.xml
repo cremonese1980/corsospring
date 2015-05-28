@@ -29,5 +29,9 @@
 	
 	<!-- Declaramos el uso de anotaciones transaccionales -->
 	<tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	<!-- Definimos el suo de anotaciones para AOP -->
+	<aop:aspectj-autoproxy/>
+	
     
 </beans>

@@ -1,0 +1,40 @@
+
+Dalla cartella BIN di tomcat, da linea di comando, eseguire
+digest -a sha-1 password
+
+Copiare la password criptata dentro il file tomcat-users.xml
+
+Inserire nel web.xml il seguente frammento (con opportuno ruolo)
+
+<security-constraint>
+        <display-name>Constraint1</display-name>
+        <web-resource-collection>
+            <web-resource-name>admin</web-resource-name>
+            <description>administracion</description>
+            <url-pattern>/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <description/>
+            <role-name>ventura24</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        </login-config>
+    <security-role>
+        <description/>
+        <role-name>ventura24</role-name>
+    </security-role>
+    
+    
+    ______________________-
+    da linea di comando
+    keytool -genkey -alias tomcat -keyalg RSA
+    la stessa password va inserita nel server.xml
+    
+    <Connector port="8443" protocol="org.apache.coyote.http11.Http11Protocol"
+               maxThreads="150" SSLEnabled="true" scheme="https" secure="true"
+               clientAuth="false" sslProtocol="TLS" keystorePass="PASSWORD"/>
