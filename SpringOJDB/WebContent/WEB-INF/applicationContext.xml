@@ -26,5 +26,8 @@
 	
 	<!-- Activamos el MBean server de JMX con el registro -->
 	<context:mbean-export registration="replaceExisting"/>
+	
+	<!-- Declaramos el uso de anotaciones transaccionales -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
     
 </beans>

@@ -4,7 +4,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +20,8 @@ import com.pruebas.servicios.UsuariosDao;
 
 @Controller
 @RequestMapping("/main")
+@Scope("request")
+@Transactional(propagation=Propagation.REQUIRED)
 public class UsuarioController {
 
 	
@@ -43,16 +48,13 @@ public class UsuarioController {
 		
 	}
 	
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	@RequestMapping(value="/add", method=RequestMethod.POST )
+	@ExceptionForRollback
 	public String inserirUsuario(@ModelAttribute("usuarioAttr")
 			Usuario usuario, Model model){
 		
 		usuarioService.insertarUsuario(usuario);
-		
-//		List<Usuario> listado = usuarioService.getUsuarios();
-//		model.addAttribute("listado", listado);
-//		return "listadousuarios";
-		
 		
 		return "redirect:articulos";
 		
