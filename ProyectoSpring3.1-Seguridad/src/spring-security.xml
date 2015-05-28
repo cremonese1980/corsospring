@@ -26,6 +26,9 @@
 		</authentication-provider>
 	</authentication-manager>
 	
+	<!-- Necessario per gestire la sicurezza a livello di metodo -->
+	<global-method-security secured-annotations="enabled" />
+	
 </beans:beans>
 
 

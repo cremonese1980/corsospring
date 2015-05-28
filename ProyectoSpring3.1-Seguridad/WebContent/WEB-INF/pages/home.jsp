@@ -17,7 +17,7 @@
 			pagina de Admin</a><br /> <a
 			href="${pageContext.request.contextPath}/admin/second.html">Segunda
 			pagina de Admin</a><br /> <a
-			href="${pageContext.request.contextPath}/admin/method-security.html">Metodo
+			href="${pageContext.request.contextPath}/ciccio/method-security.html">Metodo
 			seguro para Admin</a><br />
 	</p>
 </body>
