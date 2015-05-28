@@ -30,7 +30,7 @@
         <web-resource-collection>
             <web-resource-name>admin</web-resource-name>
             <description>administracion</description>
-            <url-pattern>/*</url-pattern>
+            <url-pattern>/spring/*</url-pattern>
             <http-method>GET</http-method>
             <http-method>POST</http-method>
         </web-resource-collection>
