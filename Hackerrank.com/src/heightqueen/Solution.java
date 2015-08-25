@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class Solution {
 
-	private static final short SIZE = 33;
+	private static final short SIZE = 31;
 	
 	public static final short SHORT_1 = 1;
 	public  static final short SHORT_2 = 2;
@@ -27,7 +27,6 @@ public class Solution {
 			
 			currentBox = new Box(SHORT_1, columnIndex);
 			currentChess = new Chess(SIZE);
-//			currentChess.putQueen(currentBox.clone());
 			
 			putQueens(currentChess, currentBox);
 			
@@ -38,25 +37,13 @@ public class Solution {
 			System.out.println(chess);
 		}
 
-//		for (short columnIndex = 1; columnIndex <= SIZE; columnIndex++) {
-//			
-//			currentChess = new Chess(SIZE);
-//			currentBox = new Box(SHORT_1, columnIndex);
-//			Chess solution = putQueens(currentChess.clone(), currentBox.clone());
-//			
-//			if(solution!=null && solution.getCount()==SIZE){
-//				System.out.println("S:\n" + solution);
-//				break;
-//			}
-//		}
-
 	}
 	
 	
 	
 	public static void putQueens(Chess chess, Box destinationBox){
 		
-		if(!chess.putQueen(destinationBox))
+		if(!chess.putQueen(destinationBox) || chess.isDeadSolution())
 		{
 			return;
 		}
@@ -86,24 +73,10 @@ public class Solution {
 			
 			if(currBox.isAvailable())
 			{	
-//				System.out.print("("+nextAvailableRow.getRowIndex()+","+columnIndex+") ");
 				
 				putQueens(chess.clone(), currBox.clone());
 			}
 		}
-		
-//		if(columnIndex>SIZE)
-//		{
-//			return;
-//		}
-//
-//		countAttempt++;
-//		
-//		if(chess.putQueen(nextAvailable.getBox(columnIndex)))
-//		{
-//			newLine = true;
-//		}
-//		putQueens(chess.clone(), newLine ? SHORT_1: (short)(columnIndex+1));
 		
 	}
 
@@ -160,6 +133,35 @@ class Chess{
 		return null;
 	}
 	
+	public boolean isDeadSolution() {
+		
+		
+		for (short rowIndex = (short)nextAvailableRowIndex; rowIndex <= size; rowIndex++) {
+			if(this.chess.get(rowIndex).isFullRow())
+			{
+				return true;
+			}
+		}
+		
+		for (short columnIndex = 1; columnIndex <= size; columnIndex++) {
+			boolean deadSol = true;
+			for (short rowIndex = (short)1; rowIndex <= size; rowIndex++) {
+				
+				if(getBox(rowIndex, columnIndex).isQueenPresent()|| getBox(rowIndex, columnIndex).isAvailable()){
+					deadSol = false;
+					break;
+				}
+			}
+			if(deadSol)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+		
+	}
+
 	public Row getNextAvailableRowIndex() {
 		
 		if(nextAvailableRowIndex>size || !this.chess.get((short)nextAvailableRowIndex).isAvailable())
@@ -208,9 +210,11 @@ class Chess{
 			setQueen(destinationBox);
 			this.count++;
 			this.nextAvailableRowIndex++;
+			
 		}
 		return res;
 	}
+
 	private void setQueen(Box box) {
 		
 		chess.get(box.getRowIndex()).getBox(box.getColumnIndex()).setAvailable(false);
@@ -322,6 +326,18 @@ class Row{
 		}
 	}
 	
+	public boolean isFullRow() {
+
+		
+		for (short columnIndex = 1; columnIndex <= size; columnIndex++) {
+			if(getBox(columnIndex).isAvailable())
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public void setBox(Box box) {
 
 		row.put(box.getColumnIndex(), box);
