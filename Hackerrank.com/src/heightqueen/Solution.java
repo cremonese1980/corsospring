@@ -1,54 +1,109 @@
 package heightqueen;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
 public class Solution {
 
-	private static int countsol = 0;
+	private static final short SIZE = 33;
+	
+	public static final short SHORT_1 = 1;
+	public  static final short SHORT_2 = 2;
+	
+	private static int countAttempt = 0;
+	private static List<Chess> solutions;
+	
 	public static void main(String[] args) {
-		short size = 11;
-		Chess chess;
+		
+		solutions = new ArrayList<Chess>();
+		
+		Chess currentChess;
+		Box currentBox;
+		
+		for (short columnIndex = 1; columnIndex <= SIZE; columnIndex++) {
+			
+			currentBox = new Box(SHORT_1, columnIndex);
+			currentChess = new Chess(SIZE);
+//			currentChess.putQueen(currentBox.clone());
+			
+			putQueens(currentChess, currentBox);
+			
+		}
+		
+		System.out.println("Attempts " + countAttempt);
+		for (Chess chess : solutions) {
+			System.out.println(chess);
+		}
 
-		for (short columnIndex = 1; columnIndex <= size; columnIndex++) {
-			chess = new Chess(size);
-			chess.putQueen((short)1, columnIndex);
-			Chess solution = putQueens(size, (short)2, (short)1, chess.clone());
-//			if(solution!=null && solution.getCount()==size){
-				System.out.println("S:\n" + solution);
+//		for (short columnIndex = 1; columnIndex <= SIZE; columnIndex++) {
+//			
+//			currentChess = new Chess(SIZE);
+//			currentBox = new Box(SHORT_1, columnIndex);
+//			Chess solution = putQueens(currentChess.clone(), currentBox.clone());
+//			
+//			if(solution!=null && solution.getCount()==SIZE){
+//				System.out.println("S:\n" + solution);
 //				break;
 //			}
-		}
+//		}
 
 	}
 	
-	public static Chess putQueens(short size, short rowIndexDestination, short columnIndexDestination, Chess chess){
-		countsol++;
-		System.out.println(countsol);
-//		if(!chess.getRow(rowIndexDestination).isAvailable()){
-//			return null;
-//		}
+	
+	
+	public static void putQueens(Chess chess, Box destinationBox){
 		
-		for (short row=rowIndexDestination; row <= size; row++) {
-			for (short col = columnIndexDestination; col <= size;) {
+		if(!chess.putQueen(destinationBox))
+		{
+			return;
+		}
+		
+		if(solutions.size()>0)
+		{
+			return;
+		}
+		
+		if(chess.getCount()==SIZE)
+		{
+			solutions.add(chess);
+			return;
+		}
+		
+		Row nextAvailableRow = chess.getNextAvailableRowIndex();
+		if(nextAvailableRow==null)
+		{	
+			System.out.println();
+			return;
+		}
+		countAttempt++;
+		Box currBox = null;
+		
+		for (short columnIndex = 1; columnIndex <= SIZE; columnIndex++) {
+			currBox = nextAvailableRow.getBox(columnIndex);
+			
+			if(currBox.isAvailable())
+			{	
+//				System.out.print("("+nextAvailableRow.getRowIndex()+","+columnIndex+") ");
 				
-				if(chess.putQueen(row, col)){
-					if(rowIndexDestination==size){
-						return chess;
-					}
-					else{
-						return putQueens(size, (short)(row+1), (short)1, chess.clone());
-					}
-				}else if(col<size){
-					return putQueens(size, row, (short)(col+1), chess.clone());
-				}else{
-					return null;
-				}
+				putQueens(chess.clone(), currBox.clone());
 			}
 		}
 		
-		return chess;
+//		if(columnIndex>SIZE)
+//		{
+//			return;
+//		}
+//
+//		countAttempt++;
+//		
+//		if(chess.putQueen(nextAvailable.getBox(columnIndex)))
+//		{
+//			newLine = true;
+//		}
+//		putQueens(chess.clone(), newLine ? SHORT_1: (short)(columnIndex+1));
 		
 	}
 
@@ -56,9 +111,16 @@ public class Solution {
 
 class Chess{
 	
+	public static final short SHORT_1 = 1;
+	public  static final short SHORT_2 = 2;
+	public static final short SHORT_3 = 3;
+	public  static final short SHORT_4 = 4;
+	public  static final short SHORT_5 = 5;
+	
 	private short size;
 	private Map<Short,Row> chess;
 	private int count = 0;
+	private int nextAvailableRowIndex=1;
 	
 	public Chess(short size) {
 		this.size = size;
@@ -70,22 +132,44 @@ class Chess{
 	}
 	
 	public Chess clone(){
-		Row row;
-		Chess chess = new Chess(size);
+		
+		Chess clone = new Chess(size);
 		for (Short rowIndex : this.chess.keySet()) {
-			row = this.chess.get(rowIndex);
-			for (short columnIndex = 1; columnIndex <= size; columnIndex++) {
-				
-				chess.setBox(row.getBox(columnIndex).clone());
-			}
+			clone.chess.put(rowIndex, this.chess.get(rowIndex).clone());
 		}
-		chess.setCount(this.count);
-		return chess;
+		clone.setCount(this.count);
+		clone.nextAvailableRowIndex=this.nextAvailableRowIndex;
+		return clone;
 	}
 	
-	private void setBox(Box box) {
-
-		chess.get(box.getRowIndex()).setBox(box);
+	public Box getNextAvailableBoxIndex() {
+		
+		if(nextAvailableRowIndex>size || !this.chess.get((short)nextAvailableRowIndex).isAvailable())
+		{
+			return null;
+		}
+		
+		Row next = this.chess.get((short)nextAvailableRowIndex);
+		for (short columnIndex = 1; columnIndex <= size; columnIndex++) {
+			if(next.getBox(columnIndex).isAvailable())
+			{
+				return next.getBox(columnIndex);
+			}
+		}
+		
+		return null;
+	}
+	
+	public Row getNextAvailableRowIndex() {
+		
+		if(nextAvailableRowIndex>size || !this.chess.get((short)nextAvailableRowIndex).isAvailable())
+		{
+			return null;
+		}
+		
+		Row next = this.chess.get((short)nextAvailableRowIndex);
+		
+		return next.isAvailable() ? next : null;
 		
 	}
 
@@ -117,37 +201,41 @@ class Chess{
 		return count;
 	}
 
-	public boolean putQueen(short rowIndex, short columnIndex){
-		boolean res = chess.get(rowIndex).putQueen(columnIndex);
+	public boolean putQueen(Box destinationBox){
+		
+		boolean res = chess.get(destinationBox.getRowIndex()).putQueen(destinationBox.getColumnIndex());
 		if (res) {
-			setUnavailable(rowIndex, columnIndex);
+			setQueen(destinationBox);
 			this.count++;
+			this.nextAvailableRowIndex++;
 		}
 		return res;
 	}
-	private void setUnavailable(short rowIndexDestination, short columnIndexDestination) {
+	private void setQueen(Box box) {
 		
-		for (Short rowIndex : chess.keySet()) {
-			chess.get(rowIndex).getBox(columnIndexDestination).setAvailable(false);
-		}
+		chess.get(box.getRowIndex()).getBox(box.getColumnIndex()).setAvailable(false);
 		
 		Box currentBox;
 		
 		short rowDiff = 0;
 		
 		for (short rowIndex = 1; rowIndex <= size; rowIndex++) {
-			if(rowIndex==rowIndexDestination){
+			if(rowIndex==box.getRowIndex()){
 				continue;
 			}
 			
-			rowDiff = (short)(rowIndexDestination-rowIndex);
+			rowDiff = (short)(box.getRowIndex()-rowIndex);
 			rowDiff = (short)(rowDiff<0? -1*rowDiff: rowDiff);
 			
-			currentBox = getBox(rowIndex, (short)(columnIndexDestination+rowDiff));
+			currentBox = getBox(rowIndex, (short)(box.getColumnIndex()+rowDiff));
 			if(currentBox!=null){
 				currentBox.setAvailable(false);
 			}
-			currentBox = getBox(rowIndex, (short)(columnIndexDestination-rowDiff));
+			currentBox = getBox(rowIndex, (short)(box.getColumnIndex()-rowDiff));
+			if(currentBox!=null){
+				currentBox.setAvailable(false);
+			}
+			currentBox = getBox(rowIndex, (short)(box.getColumnIndex()));
 			if(currentBox!=null){
 				currentBox.setAvailable(false);
 			}
@@ -166,11 +254,58 @@ class Chess{
 		return buffer.toString();
 	}
 	
+	public static void main(String[] args) {
+		
+		Box box1 = new Box(SHORT_1, SHORT_1);
+		box1.setAvailable(false);
+		box1.setAvailable(true);
+		box1.setQueenPresent();
+		
+		Box box2 = box1.clone();
+		Box box3 = new Box(SHORT_2, SHORT_1);
+		Row row1 = new Row(SHORT_1, SHORT_2);
+		Row row2 = row1.clone();
+		row1.putQueen(SHORT_1);
+
+		
+		Chess chess1 = new Chess(SHORT_5);
+		
+		System.out.println(chess1);
+		Chess chess2 = chess1.clone();
+		System.out.println("equals " + chess1.equals(chess2));
+		
+		chess1.putQueen(new Box(SHORT_1, SHORT_5));
+		System.out.println(chess1);
+		System.out.println(chess1.nextAvailableRowIndex);
+		System.out.println(chess1.chess.get(SHORT_2));
+		System.out.println(chess1.chess.get(SHORT_1).isAvailable());
+		System.out.println(chess1.getNextAvailableBoxIndex().getRowIndex() + ", " + chess1.getNextAvailableBoxIndex().getColumnIndex());
+		
+		chess1.putQueen(new Box(SHORT_2, SHORT_1));
+		System.out.println(chess1);
+		System.out.println(chess1.nextAvailableRowIndex);
+		System.out.println(chess1.chess.get(SHORT_2));
+		System.out.println(chess1.chess.get(SHORT_1).isAvailable());
+		System.out.println(chess1.getNextAvailableBoxIndex().getRowIndex() + ", " + chess1.getNextAvailableBoxIndex().getColumnIndex());
+		
+//		chess1.putQueen(new Box(SHORT_2, SHORT_1));
+//		System.out.println(chess1);
+//		System.out.println(chess1.nextAvailableRowIndex);
+		
+//		System.out.println(row1.isAvailable());
+//		System.out.println(row1.isAvailable());
+//		System.out.println(row1);
+		
+	}
+	
 	
 	
 }
 
 class Row{
+	
+	public static final short SHORT_1 = 1;
+	public  static final short SHORT_2 = 2;
 	
 	private short rowIndex;
 	private short size;
@@ -258,11 +393,55 @@ class Row{
 		}
 		return buffer.toString();
 	}
+
+	protected Row clone(){
+		
+		Row clone = new Row(this.rowIndex, this.size);
+		clone.available = this.available;
+		
+		for (short columnIndex = 1; columnIndex <= size; columnIndex++) {
+			clone.row.put(columnIndex, this.getBox(columnIndex).clone());
+		}
+		
+		return clone;
+	}
+	
+	public static void main(String[] args) {
+		
+		Box box1 = new Box(SHORT_1, SHORT_1);
+		box1.setAvailable(false);
+		box1.setAvailable(true);
+		box1.setQueenPresent();
+		
+		Box box2 = box1.clone();
+		
+		
+		Box box3 = new Box(SHORT_2, SHORT_1);
+		
+		
+		Row row1 = new Row(SHORT_1, SHORT_2);
+		System.out.println(row1);
+		
+		Row row2 = row1.clone();
+		
+		System.out.println("equals " + row1.equals(row2));
+		System.out.println(row1.isAvailable());
+		
+		row1.putQueen(SHORT_1);
+		System.out.println(row1.isAvailable());
+
+		
+		System.out.println(row1);
+		
+	}
 	
 }
 
 
 class Box {
+	
+	public static final short SHORT_1 = 1;
+	public  static final short SHORT_2 = 2;
 	
 	private short rowIndex;
 	private short columnIndex;
@@ -343,6 +522,28 @@ class Box {
 		if (rowIndex != other.rowIndex)
 			return false;
 		return true;
+	}
+	
+	public static void main(String[] args) {
+		
+		
+		Box box1 = new Box(SHORT_1, SHORT_1);
+		System.out.println(box1);
+		box1.setAvailable(false);
+		System.out.println(box1);
+		box1.setAvailable(true);
+		System.out.println(box1);
+		box1.setQueenPresent();
+		System.out.println(box1);
+		
+		Box box2 = box1.clone();
+		
+		System.out.println("must be equal: " + box1.equals(box2) );
+		
+		System.out.println(box2);
+		Box box3 = new Box(SHORT_2, SHORT_1);
+		System.out.println("must NOT be equal: " + box1.equals(box3) );
+		
 	}
 
 	
