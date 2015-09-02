@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class Solution {
 
-	private static final short SIZE = 33;
+	private static final short SIZE = 11;
 	
 	public static final short SHORT_1 = 1;
 	public  static final short SHORT_2 = 2;
@@ -34,7 +34,26 @@ public class Solution {
 		
 		System.out.println("Attempts " + countAttempt);
 		for (Chess chess : solutions) {
+			System.out.println("**************************************");
 			System.out.println(chess);
+			System.out.println();
+			
+			
+			
+			for (short rowIndex = 1; rowIndex <= SIZE; rowIndex++) {
+				for (short columnIndex = 1; columnIndex <= SIZE; columnIndex++) {
+					
+					currentBox = chess.getBox(rowIndex, columnIndex);
+					if(currentBox.isQueenPresent())
+					{
+						System.out.print(currentBox.getColumnIndex() + " ");
+					}
+				}
+				
+			}
+			System.out.println("");
+			System.out.println("**************************************");
+			
 		}
 
 	}
@@ -48,7 +67,7 @@ public class Solution {
 			return;
 		}
 		
-		if(solutions.size()>0)
+		if(solutions.size()>60)
 		{
 			return;
 		}
