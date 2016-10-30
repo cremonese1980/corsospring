@@ -11,18 +11,18 @@ public class Solution {
 
     public static void main(String[] args) {
     	
-        Scanner in = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
         
-        int rowSize = in.nextInt();
-        int columnSize = in.nextInt();
-        int rotationValue = in.nextInt();
-        
-        int realRotationValue = checkEffectiveRotation(rotationValue, rowSize, columnSize);
+        int rowSize = scanner.nextInt();
+        int columnSize = scanner.nextInt();
+        int rotationValue = scanner.nextInt();
         
         int currentRing = 0;
         
         int currentValue;
-        int ringSize = Math.min(rowSize, columnSize)/2;
+        int totalRings = getTotalRings(rowSize, columnSize); 
+        
+        int [] rotationSizeByRing = getRotationSizeByRing(rotationValue, rowSize, columnSize, totalRings);  
         
         int[][] matrix = new int[rowSize][columnSize];
         
@@ -34,12 +34,12 @@ public class Solution {
         	for (int column = 0; column < columnSize; column++) {
 
         		
-        		currentRing = getCurrentRing(row, column, rowSize, columnSize, ringSize);
-            	currentValue = in.nextInt();
+        		currentRing = getCurrentRing(row, column, rowSize, columnSize);
+            	currentValue = scanner.nextInt();
             	
             	matrix[row][column] = currentValue;
             	
-            	int newPosition[] = getNewPosition(row, column, currentRing, rowSize, columnSize, realRotationValue);
+            	int newPosition[] = getNewPosition(row, column, currentRing, rowSize, columnSize, rotationSizeByRing[currentRing]);
             	
             	rotatedMatrix[newPosition[0]][newPosition[1]] = currentValue;
         		
@@ -47,7 +47,7 @@ public class Solution {
 			
 		}
         
-        in.close();
+        scanner.close();
         
        
         
@@ -64,7 +64,34 @@ public class Solution {
     
     
     
-    private static int[] getNewPosition(int row, int column, int currentRing, int rowSize, int colSize, int realRotationValue) {
+    private static int[] getRotationSizeByRing(int rotationValue, int rowSize, int columnSize, int totalRings) {
+
+    	int[] rotationSizeByRing = new int[totalRings];
+    	int currentRotationValue;
+    	
+    	for (int i = 0; i < rotationSizeByRing.length; i++) {
+
+    		currentRotationValue = checkEffectiveRotation(rotationValue, getRingSize(i, columnSize, rowSize));
+    		
+    		rotationSizeByRing[i] = currentRotationValue;
+    		
+		}
+    	
+    	
+    	return rotationSizeByRing;
+	}
+
+
+
+	public static int getTotalRings(int rowSize, int columnSize) {
+		
+    	
+		return Math.min(rowSize, columnSize)/2;
+	}
+
+
+
+	public static int[] getNewPosition(int row, int column, int currentRing, int rowSize, int colSize, int realRotationValue) {
 		
     	int currentLocation = getCurrentRelativeLocation(row, column, currentRing, rowSize, colSize);
     	
@@ -90,7 +117,7 @@ public class Solution {
 
 
 
-	private static int[] moveToNorth(int row, int column, int currentRing, int rowSize, int colSize,
+	public static int[] moveToNorth(int row, int column, int currentRing, int rowSize, int colSize,
 			int realRotationValue) {
 
 		int[] newPosition = new int[2];
@@ -114,7 +141,7 @@ public class Solution {
 
 
 
-	private static int[] moveToEst(int row, int column, int currentRing, int rowSize, int colSize,
+	public static int[] moveToEst(int row, int column, int currentRing, int rowSize, int colSize,
 			int realRotationValue) {
 		
 		int[] newPosition = new int[2];
@@ -138,7 +165,7 @@ public class Solution {
 
 
 
-	private static int[] moveToSouth(int row, int column, int currentRing, int rowSize, int colSize,
+	public static int[] moveToSouth(int row, int column, int currentRing, int rowSize, int colSize,
 			int realRotationValue) {
 		
 		
@@ -163,7 +190,7 @@ public class Solution {
 
 
 
-	private static int[] moveToWest(int row, int column, int currentRing, int rowSize, int colSize,
+	public static int[] moveToWest(int row, int column, int currentRing, int rowSize, int colSize,
 			int realRotationValue) {
 		
 		
@@ -189,24 +216,15 @@ public class Solution {
 
 
 
-	private static int getCurrentRelativeLocation(int row, int column, int currentRing, int rowSize, int colSize) {
+	public static int getCurrentRelativeLocation(int row, int column, int currentRing, int rowSize, int colSize) {
 		
 		if(row == currentRing){
-			if(column == currentRing){
-				return WEST;
-			}
 			return NORTH;
 		}
 		if(row == rowSize - 1 - currentRing){
-			if(column == colSize -1 - currentRing){
-				return EAST;
-			}
 			return SOUTH;
 		}
 		if(column == currentRing){
-			if(row == rowSize - 1 - currentRing){
-				return SOUTH;
-			}
 			return WEST;
 		}
 		if(column == colSize -1 - currentRing){
@@ -221,7 +239,7 @@ public class Solution {
 
 
 
-	private static void printMatrix(int[][] matrix, int rowSize, int columnSize) {
+	public static void printMatrix(int[][] matrix, int rowSize, int columnSize) {
     	 
     	for (int row = 0; row < rowSize; row++) {
  			
@@ -240,20 +258,20 @@ public class Solution {
 
 
 
-	private static int checkEffectiveRotation(int rotationSize, int rowSize, int columnSize) {
+	public static int checkEffectiveRotation(int rotationSize, int ringSize) {
 
 		
-		return rotationSize % ((rowSize-1)*2 + (columnSize-1)*2);
+		return rotationSize % ringSize;
 	}
 
 
 	
     
     
-    private static int getCurrentRing(int currentRow, int currentColumn, int rowSize, int columnSize, int ringSize) {
+    public static int getCurrentRing(int currentRow, int currentColumn, int rowSize, int columnSize) {
 
     	int rowReference = currentRow +1 > rowSize/2 ? rowSize -1 : 0;
-    	int colReference = currentColumn +1 >= columnSize/2 ? columnSize -1 : 0;
+    	int colReference = currentColumn +1 > columnSize/2 ? columnSize -1 : 0;
     	
     	int rowDistance = rowReference == 0 ? currentRow : rowSize-1 -currentRow;
     	
@@ -262,6 +280,10 @@ public class Solution {
     	return Math.min(rowDistance, colDistance);
 	}
 
+    public static int getRingSize(int ringId, int columnSize, int rowSize){
+    	
+    	return 2*(rowSize-1 - ringId*2) + 2*(columnSize-1 - ringId*2);
+    }
 	
 
 
