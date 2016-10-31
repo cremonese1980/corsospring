@@ -1,146 +1,76 @@
+package a_contest.countprogression;
 
-import java.math.BigDecimal;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
 public class SolutionBest {
-	
-	private static final int MAX_DIFFERENCE = 100;
-	
-	private static final BigInteger MODULO = new BigInteger(String.valueOf(1000000009)) ;
-	
-    public static void main(String[] args) {
-    	
-    	
-    	
-        Scanner scanner = new Scanner(System.in);
-        
-        int sequenceSize = scanner.nextInt();
-        int[] sequence = new int[sequenceSize];
-        
-        for (int i = 0; i < sequence.length; i++) {
 
-        	sequence[i] = scanner.nextInt();
-        	
+	public static void main(String[] args)throws IOException {
+		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+		
+		int dp[][]=new int[1000][300];
+		int sequence[]=new int[400000];
+		int co[]=new int[1000];
+		 
+		int sequenceSize=Integer.parseInt(br.readLine());
+		int maxInputNumber = 0;
+		
+		for(int i=1;i<=sequenceSize;i++){
+			
+			sequence[i]=Integer.parseInt(br.readLine());
+			
+		    if (sequence[i]>maxInputNumber){
+		    	maxInputNumber = sequence[i];
+		    }
 		}
-        
-        scanner.close();
-        
-        BigInteger sequencePlusOne = BigInteger.ONE.add(new BigInteger(String.valueOf(sequenceSize)));
-        BigInteger combinations = getCouples(sequenceSize);
-        BigInteger result = getResult(sequence);
-        
-        result = result.add(sequencePlusOne).add(combinations).mod(new BigInteger(String.valueOf(MODULO)));
-        
-        
-        System.out.println(result.mod(MODULO));
-        
-    }
-
-	
-    
-    private static BigInteger getResult(int[] sequence) {
-    	
-    	BigInteger totalCount = BigInteger.ZERO;
-    	
-    	for (int currentDifference = -1*MAX_DIFFERENCE; currentDifference <= MAX_DIFFERENCE; currentDifference++) {
-			
-    		totalCount = totalCount.add(countProgressionsByDifference(sequence, currentDifference));    		
-    		
-		}
-    	
-		return totalCount;
-	}
-
-
-
-	private static BigInteger countProgressionsByDifference(int[] sequence, int difference) {
-
-//		List<Integer> currentProgression;
+		        
+		int MODULO = 1000000009;
 		
-		BigInteger countProgressionsByDifference = BigInteger.ZERO;
-		boolean firstAdded;
+		int	ans = 1;
 		
-		for (int i = 0; i < sequence.length - 1; i++) {
-			
-			firstAdded = false;
-			int currentProgressionSize = 0;
-//			currentProgression = new ArrayList<Integer>();
-			
-		
-			for (int j = i+1; j < sequence.length; j++) {
+		for (int i=1; i<=sequenceSize;i++){     
+		        
+			ans = ans + ans;
+		        
+			if (ans >= MODULO){
 				
-				int n = firstAdded ? currentProgressionSize+1 : 2;
-				
-				if(belongsToProgression(sequence[i], sequence[j], n, difference)){
-				
-					if(!firstAdded){
-						currentProgressionSize++;
-//						currentProgression.add(sequence[i]);
-						firstAdded = true;
-					}
-					
-					currentProgressionSize++;
-//					currentProgression.add(sequence[j]);
-				}
-				
+				ans -= MODULO;
 			}
-			
-			if(currentProgressionSize>2){
-				
-				countProgressionsByDifference = 
-						countProgressionsByDifference.add
-						(new BigInteger(String.valueOf(currentProgressionSize-2))) ;//TODO  Subprogression?
-				
-//				countProgressionsByDifference = 
-//						countProgressionsByDifference.add
-//						(BigInteger.ONE) ;//TODO  Subprogression?
-//				printProgression(currentProgression);
-			}
-			
-			
 		}
 		
+		ans = ans - sequenceSize - 1;
 		
-		return countProgressionsByDifference;
-	}
-	
-	private static boolean belongsToProgression(int b_1, int b_n_toCheck, int n, int difference){
+		int d,r;
 		
-		int b_n = b_1 + (n-1)*difference;
-		
-		return b_n == b_n_toCheck;
-		
-	}
-
-	private static void printProgression(List<Integer> currentProgression) {
-		
-		int index = 0;
-		for (Integer integer : currentProgression) {
+		if (ans<0) {
 			
-			System.out.print(integer);
-			
-			if(index== currentProgression.size()-1){
-				System.out.println("");
-			}else{
-				System.out.print(", ");
-			}
-			index++;
+			ans += MODULO;
 		}
-		
+		for(int i=1;i<=sequenceSize;i++){
+			
+		    for (d=-maxInputNumber; d<=maxInputNumber;d++){
+		    	
+		        if (sequence[i]-d>0)
+		        if (sequence[i]-d<=maxInputNumber){
+		                        r = (dp[sequence[i]-d][d+maxInputNumber]+co[sequence[i]-d]);  
+		                        if (r>=MODULO) r-=MODULO;
+		                        dp[sequence[i]][d+maxInputNumber] += r;
+		                        if (dp[sequence[i]][d+maxInputNumber]>=MODULO) dp[sequence[i]][d+maxInputNumber] -= MODULO;
+		                        ans -= r;
+		                        if (ans<0) ans += MODULO;
+		         }
+		     }
+		        co[sequence[i]]++;
+		}
+		BigInteger MODULO_BIG_INTEGER=new BigInteger(String.valueOf(1000000009));
+		BigInteger b=new BigInteger("2");
+		BigInteger b1=new BigInteger(String.valueOf(ans));
+		BigInteger b2=b.modPow(new BigInteger(String.valueOf(sequenceSize)),MODULO_BIG_INTEGER);
+		BigInteger b3=b1.mod(MODULO_BIG_INTEGER);
+		BigInteger b4=b2.subtract(b3);
+		System.out.println(b4.mod(MODULO_BIG_INTEGER));
+		} 
 	}
-	
-	private static BigInteger getCouples(int n) {
-
-		
-		
-		return new BigInteger(String.valueOf(n))
-				.multiply(new BigInteger(String.valueOf(n-1)))
-				.divide(new BigInteger(String.valueOf(2)));
-	}
-
-}
-
 

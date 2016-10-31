@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class Solution {
 
-	private static final short SIZE = 21;
+	private static final short SIZE = 31;
 	
 	public static final short SHORT_1 = 1;
 	public  static final short SHORT_2 = 2;

@@ -3,12 +3,14 @@ package a_contest.countprogression;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
 
-public class SolutionOLD {
+public class SolutionApparentlyReduced {
 	
 	private static final int MAX_DIFFERENCE = 100;
 	
@@ -16,66 +18,68 @@ public class SolutionOLD {
 	
     public static void main(String[] args) {
     	
-    
-    	long t0 = System.currentTimeMillis();
     	
-    	int[] zeros = new int[100];
-    	
-    	BigInteger combinations = getCouples(200000);
-   
-    	
-    	for (int i = 0; i <2000; i++) {
-    		
-    		for (int j = 0; j <2000; j++) {
-    			
-    			Math.abs(j);
-    			
-//    			allCombinations(j);
-    			
-    			belongsToProgression(i, 3, j, 5);
-    			
-    			getSubProgressionsSize(i)
-    			.multiply(new BigInteger(String.valueOf(i)))
-    			.multiply(new BigInteger(String.valueOf(j)));
-    			
-    			countZeroProgressions(zeros);
-    		}
-    		
-    		
-    		
-    	}
-    	
-    	System.out.println("ms " + (System.currentTimeMillis()-t0));
-    	
-//        Scanner scanner = new Scanner(System.in);
-//        
-//        int sequenceSize = scanner.nextInt();
-//        int[] sequence = new int[sequenceSize];
-//        int[] countMap = new int[101];
-//        
-//        for (int i = 0; i < sequence.length; i++) {
-//
-//        	sequence[i] = scanner.nextInt();
-//        	
-//        	countMap[sequence[i]]++;
-//		}
-//        
-//        scanner.close();
-//        
-//        BigInteger zeroProgressions = countZeroProgressions(countMap);
-//        BigInteger sequencePlusOne = BigInteger.ONE.add(new BigInteger(String.valueOf(sequenceSize)));
-//        BigInteger combinations = getCouples(sequenceSize);
-//        BigInteger result = getResult(sequence);
-//        
-//        result = result.add(sequencePlusOne)
-//        		.add(combinations)
-//        		.add(zeroProgressions)
-//        		.mod(new BigInteger(String.valueOf(MODULO)));
-//        
-//        
-//        System.out.println(result.mod(MODULO));
+        Scanner scanner = new Scanner(System.in);
+        
+        int sequenceSize = scanner.nextInt();
+        
+        int[] reducedSequence = new int[sequenceSize];
+        
+        int[] repetitionMap = new int[sequenceSize];
+        
+        int[] countMap = new int[101];
+        
+        int currentNumber;
+        int reducedSequenceSize = 0;
+        
+        for (int i = 0; i < sequenceSize; i++) {
+
+        	currentNumber = scanner.nextInt();
+        	countMap[currentNumber]++;
+        	
+        	if(i == 0){
+        		
+        		reducedSequence[reducedSequenceSize] = currentNumber;
+        		repetitionMap[reducedSequenceSize] = 1;
+  				reducedSequenceSize = 1;
+        		
+        		
+        		continue;
+        	}
+        	
+        	if(currentNumber == reducedSequence[reducedSequenceSize-1]){
+        		
+        		repetitionMap[reducedSequenceSize-1]++;
+        		
+        	}else{
+        		
+        		reducedSequence[reducedSequenceSize] = currentNumber;
+        		repetitionMap[reducedSequenceSize] = 1;
+        		reducedSequenceSize++;
+        		
+        	}
+        	
+		}
+        
+        scanner.close();
+        
+        BigInteger zeroProgressions = countZeroProgressions(countMap);
+        BigInteger sequencePlusOne = BigInteger.ONE.add(new BigInteger(String.valueOf(sequenceSize)));
+        BigInteger combinations = getCouples(sequenceSize);
+        BigInteger result = getResult(reducedSequence, reducedSequenceSize, repetitionMap);
+        
+        result = result.add(sequencePlusOne)
+        		.add(combinations)
+        		.add(zeroProgressions)
+        		.mod(new BigInteger(String.valueOf(MODULO)));
+        
+        
+        System.out.println(result.mod(MODULO));
         
     }
+
+
+
 
 	private static BigInteger countZeroProgressions(int[] countMap) {
 
@@ -132,14 +136,14 @@ public class SolutionOLD {
 		return numerator.divide(denominator);
 	}
 
-	private static BigInteger getResult(int[] sequence) {
+	private static BigInteger getResult(int[] sequence, int reducedSequenceSize, int[] repetitionMap) {
     	
     	BigInteger totalCount = BigInteger.ZERO;
     	
     	for (int currentDifference = -1*MAX_DIFFERENCE; currentDifference <= MAX_DIFFERENCE; currentDifference++) {
 			
     		if(currentDifference != 0){
-    			totalCount = totalCount.add(countProgressionsByDifference(sequence, currentDifference));    		
+    			totalCount = totalCount.add(countProgressionsByDifference(sequence, currentDifference, reducedSequenceSize, repetitionMap));    		
     		}
     		
     		
@@ -150,18 +154,21 @@ public class SolutionOLD {
 
 
 
-	private static BigInteger countProgressionsByDifference(int[] sequence, int difference) {
+	private static BigInteger countProgressionsByDifference(int[] sequence, int difference, 
+			int reducedSequenceSize, int[] repetitionMap) {
 
-		List<Integer> currentProgression;
+//		List<Integer> currentProgression;
 		
 		BigInteger countProgressionsByDifference = BigInteger.ZERO;
 		boolean firstAdded;
+		int countCurrentRepetitions = 1;
+		
 		
 		for (int i = 0; i < sequence.length - 1; i++) {
 			
 			firstAdded = false;
 			int currentProgressionSize = 0;
-			currentProgression = new ArrayList<Integer>();
+//			currentProgression = new ArrayList<Integer>();
 			
 		
 			for (int j = i+1; j < sequence.length; j++) {
@@ -172,12 +179,17 @@ public class SolutionOLD {
 				
 					if(!firstAdded){
 						currentProgressionSize++;
-						currentProgression.add(sequence[i]);
+						countCurrentRepetitions = countCurrentRepetitions * repetitionMap[i]; 
+//						currentProgression.add(sequence[i]);
 						firstAdded = true;
+					}else{
+						
+						countCurrentRepetitions = countCurrentRepetitions * repetitionMap[j];
+						
 					}
 					
 					currentProgressionSize++;
-					currentProgression.add(sequence[j]);
+//					currentProgression.add(sequence[j]);
 				}
 				
 			}
@@ -186,7 +198,7 @@ public class SolutionOLD {
 				
 				countProgressionsByDifference = 
 						countProgressionsByDifference.add
-						(getSubProgressionsSize(currentProgressionSize)) ;//TODO  Subprogression?
+						(getSubProgressionsSize(currentProgressionSize, countCurrentRepetitions)) ;
 				
 				
 //				countProgressionsByDifference = 
@@ -202,9 +214,12 @@ public class SolutionOLD {
 		return countProgressionsByDifference;
 	}
 	
-	private static BigInteger getSubProgressionsSize(int originalProgressionSize) {
+	private static BigInteger getSubProgressionsSize(int originalProgressionSize, 
+			int reducedSequenceSize) {
 
-		int sum = originalProgressionSize - 2;
+		int sum = (originalProgressionSize - 2) * reducedSequenceSize;
+		
+		
 		
 		return new BigInteger(String.valueOf(sum));
 	}
