@@ -7,7 +7,7 @@ public class Solution_ {
 	
   public static int MODULO = 1000000009;
   
-  public static int MAX_VALUE = 5;
+  public static int MAX_VALUE = 6;
 
   public static void main(String[] args) throws IOException {
     

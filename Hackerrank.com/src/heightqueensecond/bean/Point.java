@@ -1,11 +1,40 @@
 package heightqueensecond.bean;
 
+import java.util.Iterator;
+import java.util.List;
+
 public class Point {
 	
 	private int row;
 	private int column;
+	private int index;
+	private List<Integer> freeList;
+	
+	private int pow;
+	
+	private int freeListSum;
 	
 	
+	public Point(int row, int column, int index, List<Integer> freeList) {
+		
+		this.row = row;
+		this.column = column;
+		this.index = index;
+		this.freeList = freeList;
+//		this.pow = (int)Math.pow(2, index);
+//		
+//		
+//		
+//		for (Iterator<Integer> iterator = freeList.iterator(); iterator.hasNext();) {
+//			Integer integer = iterator.next();
+//			
+//			freeListSum+= (int)Math.pow(2, integer);
+//			
+//			
+//			
+//		}
+	}
+
 	public Point(int row, int column) {
 
 		this.row = row;
@@ -25,8 +54,22 @@ public class Point {
 		return row + column;
 	}
 
+	public int getIndex() {
+		return index;
+	}
+	
+	public int getPow(){
+		return this.pow;
+	}
 	
 
+	public int getFreeListSum() {
+		return freeListSum;
+	}
+
+	public List<Integer> getFreeList() {
+		return freeList;
+	}
 
 	@Override
 	public int hashCode() {
@@ -51,6 +94,22 @@ public class Point {
 		if (row != other.row)
 			return false;
 		return true;
+	}
+
+	public String printFreeList() {
+		
+		StringBuffer buffer = new StringBuffer("Index [" + index + "] - Free list: ");
+		
+		for (Integer integer : freeList) {
+		
+				buffer.append(integer + ",");
+			
+		}
+		
+		
+//		buffer.replace(buffer.lastIndexOf(","), buffer.lastIndexOf(","), "") ;
+
+		return    buffer.toString();
 	}
 	
 	
