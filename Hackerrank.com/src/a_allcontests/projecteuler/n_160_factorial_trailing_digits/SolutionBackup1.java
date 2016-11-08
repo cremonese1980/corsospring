@@ -7,101 +7,117 @@ import java.text.*;
 import java.math.*;
 import java.util.regex.*;
 
-public class Solution {
+public class SolutionBackup1 {
 	
 	private static final BigInteger ZERO = new BigInteger(String.valueOf("0"));
 	private static final BigInteger ONE = new BigInteger(String.valueOf("1"));
 	private static final BigInteger TWO = new BigInteger(String.valueOf("2"));
 	private static final BigInteger TEN = new BigInteger(String.valueOf("10"));
 	private static final BigInteger HUNDRED_TOUSAND = new BigInteger(String.valueOf("100000"));
-	private static final BigInteger MILLION = new BigInteger(String.valueOf("1000000"));
 	
-	private static final int LIMIT = 1000000000;
+	private static final int LIMIT = 300000;
 	
-	private static Map<BigInteger, BigInteger> coincidenceMap;
+	private static Map<String, List<Integer>> repetitionMap;
 
     public static void main(String[] args) {
     	
     	printData();
     	
+//        Scanner scanner = new Scanner(System.in);
+//        
+//        int base = scanner.nextInt();
+//        int testNumber = scanner.nextInt();
+//        
+//        
+//        for(int a0 = 0; a0 < testNumber; a0++){
+//        	
+//            String stringNumber = scanner.next();
+//            
+//            System.out.println(getSolution(new BigInteger(stringNumber)));
+//        }
+//        
+//        scanner.close();
     }
 
 	private static void printData() {
 		
-		System.out.println("=============================================");
-		System.out.printf("%-10s", "N");
-		System.out.printf("%-10s", "Zeros");
-		System.out.printf("%-10s", "Last 5");
-		System.out.printf("%-10s", "Last 5");
-		System.out.printf("%-30s%n", "Factorial");
+		repetitionMap = new LinkedHashMap<String, List<Integer>>();
 		
 		
-		BigInteger firstFactorial = null;
-		BigInteger otherFactorial = null;
-		
-		for (long i = 1; i <= LIMIT; i++) {
+		for (int i = 200001; i <= LIMIT; i++) {
 			
-			for (long j = 1; j <= LIMIT; j++) {
+//			long t0 = System.currentTimeMillis();
+//			long t = System.currentTimeMillis()-t0;			
+//			System.out.println("factorial " + t + " ms");
+			
+//			t0 = System.currentTimeMillis();
+			BigInteger otherFactorial = otherFactorial(new BigInteger(String.valueOf(i)));
+//			t = System.currentTimeMillis()-t0;
+//			System.out.println("other factorial " + t + " ms");
+			
+			String firstFactorialString = leftPad(otherFactorial.toString());
+			
+			if(repetitionMap.get(firstFactorialString)==null){
 				
-				long test= 123456*145678;
+				List<Integer> numberList = new LinkedList<Integer>();
+				repetitionMap.put(firstFactorialString, numberList);
 				
-				
+			}else{
+				repetitionMap.get(firstFactorialString).add(i);
 			}
-			System.out.println("Completed " + LIMIT * i);
+			
+//			System.out.println(i +  "\tcomputed= "+ otherFactorial);
+			
+			if(i%1000==0){
+				System.out.println("cicle " + i + "/" + LIMIT + " = " + ((double)i*100.0/((double)LIMIT)) + "%");
+			}
 			
 		}
 		
-//		for (long i = LIMIT; i <= LIMIT; i++) {
-//			
-//			firstFactorial = null;// otherFactorial(new BigInteger(String.valueOf(i)));
-//			
-//			long zeros = countZeros(i);
-//			String lastFive = null;//getLastFiveNonZeroDigits(firstFactorial);
-//			
-//			otherFactorial = otherFactorial2(new BigInteger(String.valueOf(i)));
-//			
-//			
-//			System.out.println("=============================================");
-//			System.out.printf("%-10s", i);
-//			System.out.printf("%-10s", zeros);
-//			System.out.printf("%-10s", lastFive);
-//			System.out.printf("%-10s", otherFactorial);
-//			System.out.printf("%-30s%n", firstFactorial);
-//			
-//			
-//			
-//		}
 		
-		System.out.println("Finish");
+		printRepetitionMap();
+		
 		
 	}
 	
-	private static int numberLength(BigInteger firstFactorial) {
-		return firstFactorial.toString().length();
-	}
+	private static void printRepetitionMap() {
+		
+		System.out.println("Repetition size " + repetitionMap.keySet().size());
 
-	private static long countZeros(long i) {
-		
-		long result = 0;
-		
-		boolean finish = false;
-		long fivePower = 5;
-		
-		while(!finish){
+		for (String lastDigits : repetitionMap.keySet()) {
 			
-			result+=i/fivePower;
-			
-			fivePower*= 5;
-			
-			if(fivePower>i){
-				finish = true;
+			if(repetitionMap.get(lastDigits).size()>1){
+				
+				System.out.println("========================================");
+				System.out.print(lastDigits + ": ");
+				
+				for (Integer number : repetitionMap.get(lastDigits)) {
+					
+					System.out.print(number);
+					if(repetitionMap.get(lastDigits).indexOf(number)!=repetitionMap.get(lastDigits).size()-1){
+						System.out.print(", ");
+					}
+					
+				}
+				
+				System.out.println("\n========================================");
+				
+				
+			}else{
+				System.out.println("================SINGLE========================");
+				System.out.print(lastDigits + ": ");
+				
+				for (Integer number : repetitionMap.get(lastDigits)) {
+					
+					System.out.print(number);
+					
+				}
+				
+				System.out.println("\n====================SINGLE====================");
 			}
 			
 		}
-
-		return result;
 		
-//		return i/5 + i/25 + i/125;
 	}
 
 	private static BigInteger otherFactorial(BigInteger n) {
@@ -146,14 +162,13 @@ public class Solution {
 		
 	}
 	
-	private static BigInteger otherFactorial2(BigInteger n) {
+	private static BigInteger otherFactorial2(BigInteger n, BigInteger firstFactorial) {
 		
-		BigInteger normalizedN = n.compareTo(MILLION)>0 ? MILLION : n;
+		String firstFactorialString = leftPad(firstFactorial.toString());
 		
 		BigInteger result = BigInteger.ONE;
 		
 		boolean finish = false;
-		
 		
 		while(!finish){
 			
@@ -161,18 +176,23 @@ public class Solution {
 				finish = true;
 			}else{
 				
-//				normalizedN = normalizeResult(n);
+				BigInteger normalizedN = normalizeResult(n);
 				
 				result = normalizedN.multiply(result);
 				
+				if(n.compareTo(TWO)>0 && result.toString().endsWith(firstFactorialString)){
+					
+					System.out.println("n= " + n + ", diff= " + (LIMIT-n.intValue()) + ", result = " + result);
+				}
+				
 				result = normalizeResult(result);
 				
-				normalizedN = normalizedN.subtract(BigInteger.ONE);
+				n = n.subtract(BigInteger.ONE);
 			}
 			
 		}
 		
-		return result.mod(new BigInteger(String.valueOf("100000")));
+		return result;
 		
 	}
 

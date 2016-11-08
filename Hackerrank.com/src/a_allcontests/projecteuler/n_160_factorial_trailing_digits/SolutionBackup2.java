@@ -7,16 +7,15 @@ import java.text.*;
 import java.math.*;
 import java.util.regex.*;
 
-public class Solution {
+public class SolutionBackup2 {
 	
 	private static final BigInteger ZERO = new BigInteger(String.valueOf("0"));
 	private static final BigInteger ONE = new BigInteger(String.valueOf("1"));
 	private static final BigInteger TWO = new BigInteger(String.valueOf("2"));
 	private static final BigInteger TEN = new BigInteger(String.valueOf("10"));
 	private static final BigInteger HUNDRED_TOUSAND = new BigInteger(String.valueOf("100000"));
-	private static final BigInteger MILLION = new BigInteger(String.valueOf("1000000"));
 	
-	private static final int LIMIT = 1000000000;
+	private static final int LIMIT = 200;
 	
 	private static Map<BigInteger, BigInteger> coincidenceMap;
 
@@ -28,82 +27,29 @@ public class Solution {
 
 	private static void printData() {
 		
-		System.out.println("=============================================");
-		System.out.printf("%-10s", "N");
-		System.out.printf("%-10s", "Zeros");
-		System.out.printf("%-10s", "Last 5");
-		System.out.printf("%-10s", "Last 5");
-		System.out.printf("%-30s%n", "Factorial");
 		
+		coincidenceMap = new LinkedHashMap<BigInteger, BigInteger>();
 		
 		BigInteger firstFactorial = null;
-		BigInteger otherFactorial = null;
 		
-		for (long i = 1; i <= LIMIT; i++) {
+		for (int i = 1; i <= LIMIT; i++) {
 			
-			for (long j = 1; j <= LIMIT; j++) {
-				
-				long test= 123456*145678;
-				
-				
-			}
-			System.out.println("Completed " + LIMIT * i);
+			firstFactorial = otherFactorial(new BigInteger(String.valueOf(i)));
+			
+//			System.out.println("n = " + i + ", last five = " + firstFactorial );
+//			BigInteger otherFactorial = otherFactorial2(new BigInteger(String.valueOf(i)), firstFactorial, new BigInteger(String.valueOf(i)));
+			
+			BigInteger otherFactorial = factorial(new BigInteger(String.valueOf(i)));
+			
+//			System.out.println("\n____________________________________\n");
+			System.out.println(i + ":\t5 digits= " + firstFactorial + ", fact= " + otherFactorial);
 			
 		}
-		
-//		for (long i = LIMIT; i <= LIMIT; i++) {
-//			
-//			firstFactorial = null;// otherFactorial(new BigInteger(String.valueOf(i)));
-//			
-//			long zeros = countZeros(i);
-//			String lastFive = null;//getLastFiveNonZeroDigits(firstFactorial);
-//			
-//			otherFactorial = otherFactorial2(new BigInteger(String.valueOf(i)));
-//			
-//			
-//			System.out.println("=============================================");
-//			System.out.printf("%-10s", i);
-//			System.out.printf("%-10s", zeros);
-//			System.out.printf("%-10s", lastFive);
-//			System.out.printf("%-10s", otherFactorial);
-//			System.out.printf("%-30s%n", firstFactorial);
-//			
-//			
-//			
-//		}
 		
 		System.out.println("Finish");
 		
 	}
 	
-	private static int numberLength(BigInteger firstFactorial) {
-		return firstFactorial.toString().length();
-	}
-
-	private static long countZeros(long i) {
-		
-		long result = 0;
-		
-		boolean finish = false;
-		long fivePower = 5;
-		
-		while(!finish){
-			
-			result+=i/fivePower;
-			
-			fivePower*= 5;
-			
-			if(fivePower>i){
-				finish = true;
-			}
-			
-		}
-
-		return result;
-		
-//		return i/5 + i/25 + i/125;
-	}
-
 	private static BigInteger otherFactorial(BigInteger n) {
 		
 		BigInteger result = BigInteger.ONE;
@@ -146,14 +92,15 @@ public class Solution {
 		
 	}
 	
-	private static BigInteger otherFactorial2(BigInteger n) {
+	private static BigInteger otherFactorial2(BigInteger n, BigInteger firstFactorial, BigInteger originalN) {
 		
-		BigInteger normalizedN = n.compareTo(MILLION)>0 ? MILLION : n;
+		String firstFactorialString = leftPad(firstFactorial.toString());
 		
 		BigInteger result = BigInteger.ONE;
 		
 		boolean finish = false;
 		
+		boolean foundLimit = false;
 		
 		while(!finish){
 			
@@ -161,18 +108,33 @@ public class Solution {
 				finish = true;
 			}else{
 				
-//				normalizedN = normalizeResult(n);
+				BigInteger normalizedN = normalizeResult(n);
 				
 				result = normalizedN.multiply(result);
 				
+				if(!foundLimit && n.compareTo(TWO)>0 && result.toString().endsWith(firstFactorialString)){
+					
+					foundLimit = true;
+					
+					if(coincidenceMap.get(n)==null){
+						coincidenceMap.put(n, originalN);
+//						System.out.println("Original n= " + originalN + ", n= " + (n) + ", result = " + result);
+					}
+					
+				}
+				
 				result = normalizeResult(result);
 				
-				normalizedN = normalizedN.subtract(BigInteger.ONE);
+				n = n.subtract(BigInteger.ONE);
 			}
 			
 		}
 		
-		return result.mod(new BigInteger(String.valueOf("100000")));
+		if(!foundLimit){
+//			System.out.println("No coincidence found");
+		}
+		
+		return result;
 		
 	}
 
