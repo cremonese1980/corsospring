@@ -122,6 +122,7 @@ public class Chess {
 		return result;
 	}
 
+
 	public static List<Integer> cloneList(List<Integer> list) {
 	    List<Integer> clone = new ArrayList<Integer>(list.size());
 	    for (Integer item : list) clone.add(item.intValue());
