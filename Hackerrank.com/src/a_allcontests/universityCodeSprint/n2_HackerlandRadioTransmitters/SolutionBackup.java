@@ -6,7 +6,7 @@ import java.text.*;
 import java.math.*;
 import java.util.regex.*;
 
-public class Solution {
+public class SolutionBackup {
 	
 	private static final int EMPTY = 0;
 	private static final int HOUSE = 1;
@@ -43,7 +43,7 @@ public class Solution {
         in.close();
         
         
-        int numberOfTransmitters = getSolution(city.keySet().size(), transmitterRange, positionMap, firstPosition, lastPosition);
+        int numberOfTransmitters = getSolution(numberOfHouses, transmitterRange, positionMap, firstPosition, lastPosition);
         
         
         System.out.println(numberOfTransmitters);
@@ -53,11 +53,6 @@ public class Solution {
 
 	private static int getSolution(int numberOfHouses, int transmitterRange, int[] positionMap, int firstPosition,
 			int lastPosition) {
-		
-		
-		if(numberOfHouses == 1){
-			return 1;
-		}
 
 		int previousPosition = -1;
 		int firstUncovered = firstPosition;
@@ -66,7 +61,6 @@ public class Solution {
 		
 		
 		for (Integer currentPosition : city.keySet()) {
-			
 			
 			/*
 			 * Just first time
@@ -78,66 +72,75 @@ public class Solution {
 				
 			}
 			
+			/*
+			 * If already covered
+			 */
 			
-			if(isCovered(currentPosition, transmitterRange, trasmitterMap)){
-				previousPosition = currentPosition;
-				continue;
-			}else{
+			if(firstUncovered == 0){
 				
-				if(firstUncovered == 0){
-					firstUncovered = currentPosition;
-				}
-				
-//				if(currentPosition == lastPosition){
-//					trasmitterMap.add(currentPosition);
-//					break;
-//				}
-				
-			}
-			
-			int distanceFromFirstUncovered = currentPosition-firstUncovered; 
-			
-			if(distanceFromFirstUncovered < transmitterRange){
-				
-				previousPosition = currentPosition;
-			}
-			
-			
-			if(distanceFromFirstUncovered == transmitterRange){
-				
-				trasmitterMap.add(currentPosition);
-				previousPosition = currentPosition;
-				firstUncovered = 0;
-				
-			}
-			
-			if(distanceFromFirstUncovered > transmitterRange){
-				
-				
-				trasmitterMap.add(previousPosition);
-				
-				if(currentPosition - previousPosition > transmitterRange){
-						
+				if(!isCovered(currentPosition, transmitterRange, trasmitterMap)){
+					
 					firstUncovered = currentPosition;
 				}else{
 					
-					firstUncovered = 0;
+					previousPosition = currentPosition;
+					continue;
+					
 				}
+				
+			}
+			
+			if(currentPosition!=lastPosition && 
+					isPotentiallyCovered(firstUncovered, transmitterRange, currentPosition) 
+					){
+				
 				previousPosition = currentPosition;
+				continue;
+			}
+			
+			if(currentPosition == lastPosition){
+				
+				if(trasmitterMap.size()==0 || 
+						trasmitterMap.get(trasmitterMap.size()-1) + transmitterRange < currentPosition){
+					
+					
+					trasmitterMap.add(currentPosition);
+					
+				}
+				
+				
+				break;
 				
 			}
 			
 			
-			if(currentPosition == lastPosition &&
-					!isCovered(currentPosition, transmitterRange, trasmitterMap)){
+			if(transmitterRange == currentPosition-firstUncovered){
 				
 				trasmitterMap.add(currentPosition);
-				break;
+				firstUncovered = 0;
+				
+			}else{
+				
+				trasmitterMap.add(previousPosition);
+
+				if(currentPosition-previousPosition <= transmitterRange){
+					
+					firstUncovered = 0;
+					
+				}else{
+					firstUncovered = currentPosition;
+				}
+				
+			
 			}
 			
 			
 			
-//			previousPosition = currentPosition;
+			
+			
+			
+			
+			previousPosition = currentPosition;
 		}
 		
 		return trasmitterMap.size();
@@ -153,4 +156,10 @@ public class Solution {
 		return trasmitterMap.get(trasmitterMap.size()-1) + transmitterRange >= currentPosition;
 	}
 
+	private static boolean isPotentiallyCovered(int firstUncovered, int transmitterRange, Integer currentPosition) {
+		
+		
+		
+		return transmitterRange > currentPosition-firstUncovered;
+	}
 }

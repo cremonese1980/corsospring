@@ -1,4 +1,4 @@
-package a_allcontests.projecteuler.n_14_Longest_Collatz;
+package a_allcontests.projecteuler.n_014_Longest_Collatz;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;

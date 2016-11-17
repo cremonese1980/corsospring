@@ -1,4 +1,4 @@
-package a_allcontests.projecteuler.n_13_large_sum;
+package a_allcontests.projecteuler.n_013_large_sum;
 
 import java.math.BigInteger;
 import java.util.Scanner;
